@@ -4,8 +4,30 @@
 #include <string>
 #include <cstdlib>
 
+//template< typename nodeType >
+struct Edge
+{
+        int neighbor;
+
+        int weight;
+
+	Edge()
+	{
+		neighbor = 0;
+
+		weight = 0;
+	}
+
+	Edge( int setNeighbor, int setWeight )
+	{
+		neighbor = setNeighbor;
+
+		weight = setWeight;
+	}
+};
+
 template< typename keyType, typename valueType >
-using GraphList = std::map< keyType, std::set< valueType > >; 
+using GraphList = std::map< keyType, std::map< valueType, Edge > >; 
 
 template< typename keyType, typename valueType >
 void RemoveEdges( GraphList< keyType, valueType >& graph )
@@ -46,7 +68,7 @@ int main( int argc, char* argv[] )
 		{
 			std::cout << "\tj % desiredSize = " << j % desiredSize << std::endl;
 
-			graph[ i ].insert( j % desiredSize );
+			graph[ i ][ j % desiredSize ] = Edge( j % desiredSize, 1 ) ;
 		}
 	}
 
@@ -54,11 +76,11 @@ int main( int argc, char* argv[] )
 
 	for( auto node = graph.begin(); node != graph.end(); ++node )
 	{
-		std::cout << node->first << ":";
+		std::cout << node->first;
 
 		for( auto neighbor = node->second.begin(); neighbor != node->second.end(); ++neighbor )
 		{
-			std::cout << " " << *neighbor;
+			std::cout << " " << neighbor->first << ":" << neighbor->second.weight;
 		}
 
 		std::cout << std::endl;
