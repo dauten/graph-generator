@@ -2,9 +2,28 @@
 #include <map>
 #include <set>
 #include <string>
+#include <cstdlib>
 
 template< typename keyType, typename valueType >
 using GraphList = std::map< keyType, std::set< valueType > >; 
+
+template< typename keyType, typename valueType >
+void RemoveEdges( GraphList< keyType, valueType >& graph )
+{
+        for( auto node = graph.begin(); node != graph.end(); ++node )
+        {
+                for( auto neighbor = node->second.begin(); neighbor != node->second.end(); ++neighbor )
+                {
+                        if( std::rand() % 2 == 0 )
+                        {
+                                graph.find( *neighbor )->second.erase( node->first );
+
+                                node->second.erase( neighbor );
+                        }
+                }
+        }
+}
+
 
 int main( int argc, char* argv[] )
 {
@@ -31,6 +50,8 @@ int main( int argc, char* argv[] )
 		}
 	}
 
+	RemoveEdges( graph );
+
 	for( auto node = graph.begin(); node != graph.end(); ++node )
 	{
 		std::cout << node->first << ":";
@@ -45,3 +66,4 @@ int main( int argc, char* argv[] )
 
 	return 0;
 }
+
