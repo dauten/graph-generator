@@ -30,20 +30,25 @@ template< typename keyType, typename valueType >
 using GraphList = std::map< keyType, std::map< valueType, Edge > >; 
 
 template< typename keyType, typename valueType >
-void RemoveEdges( GraphList< keyType, valueType >& graph )
+void RemoveEdges( GraphList< keyType, valueType >& graph, int percentToKeep = 100 )
 {
-        for( auto node = graph.begin(); node != graph.end(); ++node )
-        {
-                for( auto neighbor = node->second.begin(); neighbor != node->second.end(); ++neighbor )
-                {
-                        if( std::rand() % 2 == 0 )
-                        {
-                                graph.find( neighbor->first )->second.erase( node->first );
+	if( percentToKeep != 100 )
+	{
+		int modNumber = 100 / percentToKeep;
 
-                                node->second.erase( neighbor->first );
-                        }
-                }
-        }
+	        for( auto node = graph.begin(); node != graph.end(); ++node )
+        	{
+                	for( auto neighbor = node->second.begin(); neighbor != node->second.end(); ++neighbor )
+	                {
+        	                if( std::rand() % 100 + 1 > percentToKeep )
+                	        {
+                        	        graph.find( neighbor->first )->second.erase( node->first );
+
+                                	node->second.erase( neighbor->first );
+	                        }
+        	        }
+	        }
+	}
 }
 
 template< typename keyType, typename valueType >
@@ -62,11 +67,23 @@ void OutputGraph( GraphList< keyType, valueType >& graph, std::ostream& desiredO
         }
 }
 
+int GenerateWeight( int range )
+{
+	int sign = 1;
+
+	if( std::rand() % 2 == 0 )
+	{
+	//	positive = -1;
+	}
+
+	return sign * ( std::rand() % range / 2 );
+}
+
 int main( int argc, char* argv[] )
 {
-	if( argc != 2 )
+	if( argc < 2 )
 	{
-		std::cerr << "Usage: graph-generator <number of vertices>" << std::endl;
+		std::cerr << "Usage: graph-generator <number of vertices> [weight range]" << std::endl;
 
 		return 1;
 	}
@@ -77,17 +94,13 @@ int main( int argc, char* argv[] )
 
 	for( int i = 0; i < desiredSize; ++i )
 	{
-		std::cout << "i = " << i << std::endl;
-
 		for( int j = i + 1; j % desiredSize != i; ++j )
 		{
-			std::cout << "\tj % desiredSize = " << j % desiredSize << std::endl;
-
-			graph[ i ][ j % desiredSize ] = Edge( j % desiredSize, 1 ) ;
+			graph[ i ][ j % desiredSize ] = Edge( j % desiredSize, GenerateWeight( std::atoi( argv[ 2 ] ) ) );
 		}
 	}
 
-	RemoveEdges( graph );
+	RemoveEdges( graph, std::atof( argv[ 3 ] ) );
 
 	OutputGraph( graph, std::cout );
 
