@@ -46,6 +46,21 @@ void RemoveEdges( GraphList< keyType, valueType >& graph )
         }
 }
 
+template< typename keyType, typename valueType >
+void OutputGraph( GraphList< keyType, valueType >& graph, std::ostream& desiredOutput )
+{
+	for( auto node = graph.begin(); node != graph.end(); ++node )
+        {
+                desiredOutput << node->first;
+
+                for( auto neighbor = node->second.begin(); neighbor != node->second.end(); ++neighbor )
+                {
+                        desiredOutput << " " << neighbor->first << ":" << neighbor->second.weight;
+                }
+
+                desiredOutput << std::endl;
+        }
+}
 
 int main( int argc, char* argv[] )
 {
@@ -72,19 +87,9 @@ int main( int argc, char* argv[] )
 		}
 	}
 
-	RemoveEdges( graph );
+//	RemoveEdges( graph );
 
-	for( auto node = graph.begin(); node != graph.end(); ++node )
-	{
-		std::cout << node->first;
-
-		for( auto neighbor = node->second.begin(); neighbor != node->second.end(); ++neighbor )
-		{
-			std::cout << " " << neighbor->first << ":" << neighbor->second.weight;
-		}
-
-		std::cout << std::endl;
-	}
+	OutputGraph( graph, std::cout );
 
 	return 0;
 }
