@@ -38,9 +38,9 @@ void RemoveEdges( GraphList< keyType, valueType >& graph )
                 {
                         if( std::rand() % 2 == 0 )
                         {
-                                graph.find( *neighbor )->second.erase( node->first );
+                                graph.find( neighbor->first )->second.erase( node->first );
 
-                                node->second.erase( neighbor );
+                                node->second.erase( neighbor->first );
                         }
                 }
         }
@@ -87,7 +87,7 @@ int main( int argc, char* argv[] )
 		}
 	}
 
-//	RemoveEdges( graph );
+	RemoveEdges( graph );
 
 	OutputGraph( graph, std::cout );
 
