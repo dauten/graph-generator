@@ -17,14 +17,30 @@ int main( int argc, char* argv[] )
 
 	GraphList< int, int > graph;
 
-	for( int i = 0; i < std::atoi( argv[ 1 ] ); ++i )
+	int desiredSize = std::atoi( argv[ 1 ] );
+
+	for( int i = 0; i < desiredSize; ++i )
 	{
-		graph[ i ].insert( i );
+		std::cout << "i = " << i << std::endl;
+
+		for( int j = i + 1; j % desiredSize != i; ++j )
+		{
+			std::cout << "\tj % desiredSize = " << j % desiredSize << std::endl;
+
+			graph[ i ].insert( j % desiredSize );
+		}
 	}
 
 	for( auto node = graph.begin(); node != graph.end(); ++node )
 	{
-		std::cout << node->first << ": " << *(node->second.begin()) << std::endl;
+		std::cout << node->first << ":";
+
+		for( auto neighbor = node->second.begin(); neighbor != node->second.end(); ++neighbor )
+		{
+			std::cout << " " << *neighbor;
+		}
+
+		std::cout << std::endl;
 	}
 
 	return 0;
