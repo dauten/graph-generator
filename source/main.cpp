@@ -4,33 +4,9 @@
 #include <string>
 #include <cstdlib>
 
-//template< typename nodeType >
-struct Edge
-{
-        int neighbor;
+typedef std::map< int, std::map< int, int > > GraphList; 
 
-        int weight;
-
-	Edge()
-	{
-		neighbor = 0;
-
-		weight = 0;
-	}
-
-	Edge( int setNeighbor, int setWeight )
-	{
-		neighbor = setNeighbor;
-
-		weight = setWeight;
-	}
-};
-
-template< typename keyType, typename valueType >
-using GraphList = std::map< keyType, std::map< valueType, Edge > >; 
-
-template< typename keyType, typename valueType >
-void RemoveEdges( GraphList< keyType, valueType >& graph, int percentToKeep = 100 )
+void RemoveEdges( GraphList& graph, int percentToKeep = 100 )
 {
 	if( percentToKeep != 100 )
 	{
@@ -51,8 +27,7 @@ void RemoveEdges( GraphList< keyType, valueType >& graph, int percentToKeep = 10
 	}
 }
 
-template< typename keyType, typename valueType >
-void OutputGraph( GraphList< keyType, valueType >& graph, std::ostream& desiredOutput )
+void OutputGraph( GraphList& graph, std::ostream& desiredOutput )
 {
 	for( auto node = graph.begin(); node != graph.end(); ++node )
         {
@@ -60,7 +35,7 @@ void OutputGraph( GraphList< keyType, valueType >& graph, std::ostream& desiredO
 
                 for( auto neighbor = node->second.begin(); neighbor != node->second.end(); ++neighbor )
                 {
-                        desiredOutput << " " << neighbor->first << ":" << neighbor->second.weight;
+                        desiredOutput << " " << neighbor->first << ":" << neighbor->second;
                 }
 
                 desiredOutput << std::endl;
@@ -79,6 +54,27 @@ int GenerateWeight( int range )
 	return sign * ( std::rand() % range / 2 );
 }
 
+GraphList GenerateUndirectedGraph( int desiredSize, int weightRange )
+{
+	GraphList newGraph;
+
+	for( int i = 0; i < desiredSize; ++i )
+        {
+                for( int j = i + 1; j % desiredSize != i; ++j )
+                {
+                        int neighbor = j % desiredSize;
+
+                        int weight = GenerateWeight( weightRange );
+
+                        newGraph[ i ][ j % desiredSize ] = weight ;
+
+                        newGraph[ neighbor ][ i ] = weight;
+                }
+        }
+
+	return newGraph;
+}
+
 int main( int argc, char* argv[] )
 {
 	if( argc < 2 )
@@ -88,19 +84,9 @@ int main( int argc, char* argv[] )
 		return 1;
 	}
 
-	GraphList< int, int > graph;
+	GraphList graph = GenerateUndirectedGraph( std::atoi( argv[ 1 ] ), std::atoi( argv[ 2 ] ) );
 
-	int desiredSize = std::atoi( argv[ 1 ] );
-
-	for( int i = 0; i < desiredSize; ++i )
-	{
-		for( int j = i + 1; j % desiredSize != i; ++j )
-		{
-			graph[ i ][ j % desiredSize ] = Edge( j % desiredSize, GenerateWeight( std::atoi( argv[ 2 ] ) ) );
-		}
-	}
-
-	RemoveEdges( graph, std::atof( argv[ 3 ] ) );
+	RemoveEdges( graph, std::atoi( argv[ 3 ] ) );
 
 	OutputGraph( graph, std::cout );
 
