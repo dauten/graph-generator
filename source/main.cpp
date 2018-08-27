@@ -30,24 +30,27 @@ template< typename keyType, typename valueType >
 using GraphList = std::map< keyType, std::map< valueType, Edge > >; 
 
 template< typename keyType, typename valueType >
-void RemoveEdges( GraphList< keyType, valueType >& graph, int percentToKeep = 100 )
+void RemoveEdges( GraphList< keyType, valueType >& graph, bool isDirected, int percentToKeep )
 {
 	if( percentToKeep != 100 )
 	{
 		int modNumber = 100 / percentToKeep;
 
-	        for( auto node = graph.begin(); node != graph.end(); ++node )
-        	{
-                	for( auto neighbor = node->second.begin(); neighbor != node->second.end(); ++neighbor )
-	                {
-        	                if( std::rand() % 100 + 1 > percentToKeep )
-                	        {
-                        	        graph.find( neighbor->first )->second.erase( node->first );
+		for( auto node = graph.begin(); node != graph.end(); ++node )
+		{
+			for( auto neighbor = node->second.begin(); neighbor != node->second.end(); ++neighbor )
+			{
+				if( std::rand() % 100 + 1 > percentToKeep )
+				{
+					graph.find( neighbor->first )->second.erase( node->first );
 
-                                	node->second.erase( neighbor->first );
-	                        }
-        	        }
-	        }
+					if( isDirected == false )
+					{	
+						node->second.erase( neighbor->first );
+					}
+				}
+			}
+		}
 	}
 }
 
@@ -83,7 +86,7 @@ int main( int argc, char* argv[] )
 {
 	if( argc < 2 )
 	{
-		std::cerr << "Usage: graph-generator <number of vertices> [weight range]" << std::endl;
+		std::cerr << "Usage: graph-generator <number of vertices> [edge weight range] [directed flag] [graph density 1-100]" << std::endl;
 
 		return 1;
 	}
@@ -100,7 +103,26 @@ int main( int argc, char* argv[] )
 		}
 	}
 
-	RemoveEdges( graph, std::atof( argv[ 3 ] ) );
+	int percentToKeep;
+
+	if( argc < 4 )
+	{
+		percentToKeep = 100;
+	}
+
+	else
+	{
+		percentToKeep = std::atoi( argv[ 4 ] );
+	}
+
+	bool directed = false;
+
+	if( argc >= 3 )
+	{
+		directed = std::atoi( argv[2] );
+	}
+
+	RemoveEdges( graph, directed, percentToKeep );
 
 	OutputGraph( graph, std::cout );
 
