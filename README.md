@@ -20,12 +20,17 @@ To use the program, first you must compile it using make.
 The command is then 
 
 > graph-generator \<number of vertices\> [edge weight range] [directed flag] [graph density 1-100]
-  
-Edge weight range is the range you want the weights to be for edges.
 
-Directed Flag is to indicate if this graph is directed or undirected. Default is undirected.
+Edge weight range is the range you want the weights to be for edges. It will currently go from 0 to given number.
+
+Directed Flag is to indicate if this graph is directed or undirected. Default is undirected. Give it a value of 1 for directed graph.
 
 Graph density allows you to control the sparsity of graphs. Use a whole number from 1-100. This is the percentage of edges that will remain. Default is 100.
+
+The command:
+> ./graph-generator 10 50 0 50
+
+Will generate a graph with 10 vertices, with edge weights [0,50], undirected and with about 50% density.
 
 Currently, it can generate disjoint graph sets, where one file is really several different graphs. This occurs more frequently as you make the graph more sparse. A flag is to be added later to switch this effect on or off.
 
