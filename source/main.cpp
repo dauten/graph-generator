@@ -91,6 +91,13 @@ int main( int argc, char* argv[] )
 		return 1;
 	}
 
+	bool directed = false;
+
+	if( argc >= 3 )
+	{
+		directed = std::atoi( argv[2] ) == 1;
+	}
+
 	GraphList< int, int > graph;
 
 	int desiredSize = std::atoi( argv[ 1 ] );
@@ -100,6 +107,11 @@ int main( int argc, char* argv[] )
 		for( int j = i + 1; j % desiredSize != i; ++j )
 		{
 			graph[ i ][ j % desiredSize ] = Edge( j % desiredSize, GenerateWeight( std::atoi( argv[ 2 ] ) ) );
+
+			if( directed == false )
+			{
+				graph[ j % desiredSize ][ i ] = graph[ i ][ j % desiredSize ];
+			}
 		}
 	}
 
@@ -113,13 +125,6 @@ int main( int argc, char* argv[] )
 	else
 	{
 		percentToKeep = std::atoi( argv[ 4 ] );
-	}
-
-	bool directed = false;
-
-	if( argc >= 3 )
-	{
-		directed = std::atoi( argv[2] );
 	}
 
 	RemoveEdges( graph, directed, percentToKeep );
