@@ -91,12 +91,32 @@ int main( int argc, char* argv[] )
 		return 1;
 	}
 
+	
+	int weightRange=0;
+	int density;
+
 	bool directed = false;
 
-	if( argc >= 3 )
+
+	// -weight=... -density=... -directed
+	for(int i = 2; i < argc; i++)
 	{
-		directed = std::atoi( argv[2] ) == 1;
+		std::string argument = argv[i];
+		if( argument.substr(0,9).compare("-density=") == 0)
+		{
+			density = std::atoi(argv[i]+9);
+		}
+		else if( argument.substr(0,10).compare("-directed") == 0)
+		{
+			directed = true;
+		}
+		else if( argument.substr(0,9).compare("-weights=") == 0)
+		{
+			weightRange = std::atoi(argv[i]+9);
+		}
+
 	}
+
 
 	GraphList< int, int > graph;
 
@@ -106,7 +126,7 @@ int main( int argc, char* argv[] )
 	{
 		for( int j = i + 1; j % desiredSize != i; ++j )
 		{
-			graph[ i ][ j % desiredSize ] = Edge( j % desiredSize, GenerateWeight( std::atoi( argv[ 2 ] ) ) );
+			graph[ i ][ j % desiredSize ] = Edge( j % desiredSize, GenerateWeight( weightRange) );
 
 			if( directed == false )
 			{
@@ -124,8 +144,8 @@ int main( int argc, char* argv[] )
 
 	else
 	{
-		percentToKeep = std::atoi( argv[ 4 ] );
-	}
+		percentToKeep = density;
+}
 
 	RemoveEdges( graph, directed, percentToKeep );
 

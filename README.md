@@ -19,7 +19,9 @@ To use the program, first you must compile it using make.
 
 The command is then 
 
-> graph-generator \<number of vertices\> [edge weight range] [directed flag] [graph density 1-100]
+> graph-generator \<number of vertices\> <-weights=t> [-density=r] [-directed]
+
+Where t and r are the density and weight range.
 
 Edge weight range is the range you want the weights to be for edges. It will currently go from 0 to given number.
 
